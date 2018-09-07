@@ -33,12 +33,11 @@ import net.runelite.api.GameObject;
 import net.runelite.api.NPC;
 import net.runelite.api.ObjectComposition;
 import static net.runelite.api.ObjectID.*;
+import static net.runelite.api.NullObjectID.*;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import static net.runelite.client.plugins.cluescrolls.ClueScrollOverlay.TITLED_CONTENT_COLOR;
 import net.runelite.client.plugins.cluescrolls.ClueScrollPlugin;
-import static net.runelite.client.plugins.cluescrolls.ClueScrollPlugin.CLUE_SCROLL_IMAGE;
-import static net.runelite.client.plugins.cluescrolls.ClueScrollPlugin.SPADE_IMAGE;
 import static net.runelite.client.plugins.cluescrolls.ClueScrollWorldOverlay.CLICKBOX_BORDER_COLOR;
 import static net.runelite.client.plugins.cluescrolls.ClueScrollWorldOverlay.CLICKBOX_FILL_COLOR;
 import static net.runelite.client.plugins.cluescrolls.ClueScrollWorldOverlay.CLICKBOX_HOVER_BORDER_COLOR;
@@ -55,7 +54,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 		new CrypticClue("Show this to Sherlock.", "Sherlock", new WorldPoint(2733, 3415, 0), "Sherlock is located to the east of the Sorcerer's tower in Seers' Village."),
 		new CrypticClue("Talk to the bartender of the Rusty Anchor in Port Sarim.", "Bartender", new WorldPoint(3045, 3256, 0), "The Rusty Anchor is located in the north of Port Sarim."),
 		new CrypticClue("The keeper of Melzars... Spare? Skeleton? Anar?", "Oziach", new WorldPoint(3068, 3516, 0), "Speak to Oziach in Edgeville"),
-		new CrypticClue("Speak to Ulizius.", "Ulizius", new WorldPoint(3444, 3461, 0), "Ulizius is the monk who guards the gate into Mort Myre Swamp."),
+		new CrypticClue("Speak to Ulizius.", "Ulizius", new WorldPoint(3444, 3461, 0), "Ulizius is the monk who guards the gate into Mort Myre Swamp. South of fairy ring CKS"),
 		new CrypticClue("Search for a crate in a building in Hemenster.", CRATE_357, new WorldPoint(2636, 3453, 0), "House north of the Fishing Contest quest area. West of Grandpa Jack."),
 		new CrypticClue("A reck you say; let's pray there aren't any ghosts.", "Father Aereck", new WorldPoint(3242, 3207, 0), "Speak to Father Aereck in Lumbridge."),
 		new CrypticClue("Search the bucket in the Port Sarim jail.", BUCKET_9568, new WorldPoint(3013, 3179, 0), "Talk to Shantay & identify yourself as an outlaw, refuse to pay the 5gp fine twice and you will be sent to the Port Sarim jail."),
@@ -78,7 +77,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 		new CrypticClue("A town with a different sort of night-life is your destination. Search for some crates in one of the houses.", CRATE_24344, new WorldPoint(3498, 3507, 0), "Search the crate inside of the clothes shop in Canifis."),
 		new CrypticClue("Stop crying! Talk to the head.", "Head mourner", new WorldPoint(2042, 4630, 0), "Talk to the Head mourner in the mourner headquarters in West Ardougne"),
 		new CrypticClue("Search the crate near a cart in Port Khazard.", CRATE_366, new WorldPoint(2660, 3149, 0), "Search by the southern Khazard General Store in Port Khazard."),
-		new CrypticClue("Speak to the bartender of the Blue Moon Inn in Varrock.", "Blue Moon Inn", new WorldPoint(3226, 3399, 0), "Talk to the bartender in Blue Moon Inn in Varrock."),
+		new CrypticClue("Speak to the bartender of the Blue Moon Inn in Varrock.", "Bartender", new WorldPoint(3226, 3399, 0), "Talk to the bartender in Blue Moon Inn in Varrock."),
 		new CrypticClue("This aviator is at the peak of his profession.", "Captain Bleemadge", new WorldPoint(2846, 1749, 0), "Captain Bleemadge, the gnome glider pilot, is found at the top of White Wolf Mountain."),
 		new CrypticClue("Search the crates in the shed just north of East Ardougne.", CRATE_355, new WorldPoint(2617, 3347, 0), "The crates in the shed north of the northern Ardougne bank."),
 		new CrypticClue("I wouldn't wear this jean on my legs.", "Father Jean", new WorldPoint(1697, 3574, 0), "Talk to father Jean in the Hosidius church"),
@@ -98,7 +97,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 		new CrypticClue("One of the sailors in Port Sarim is your next destination.", "Captain Tobias", new WorldPoint(3026, 3216, 0), "Speak to Captain Tobias on the docks of Port Sarim."),
 		new CrypticClue("THEY'RE EVERYWHERE!!!! But they were here first. Dig for treasure where the ground is rich with ore.", new WorldPoint(3081, 3421, 0), "Dig at Barbarian Village, next to the Stronghold of Security."),
 		new CrypticClue("Talk to the mother of a basement dwelling son.", "Doris", new WorldPoint(3079, 3493, 0), "Evil Dave's mother, Doris is located in the house west of Edgeville bank."),
-		new CrypticClue("Speak to Ned in Draynor Village.", "Ned", new WorldPoint(3098, 3258, 0), "Ned is found north or the Draynor bank."),
+		new CrypticClue("Speak to Ned in Draynor Village.", "Ned", new WorldPoint(3098, 3258, 0), "Ned is found north of the Draynor bank."),
 		new CrypticClue("Speak to Hans to solve the clue.", "Hans", new WorldPoint(3211, 3219, 0), "Hans can be found at Lumbridge Castle."),
 		new CrypticClue("Search the crates in Canifis.", CRATE_24344, new WorldPoint(3509, 3497, 0), "Search inside the shop, Rufus' Meat Emporium."),
 		new CrypticClue("Search the crates in the Dwarven mine.", CRATE_357, new WorldPoint(3035, 9849, 0), "Search the crate in the room east of the Ice Mountain ladder entrance in the Drogo's Mining Emporium."),
@@ -127,7 +126,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 		new CrypticClue("Search the boxes of Falador's general store.", CRATES_24088, new WorldPoint(2955, 3390, 0), "Falador general store."),
 		new CrypticClue("In a village made of bamboo, look for some crates under one of the houses.", CRATE_356, new WorldPoint(2800, 3074, 0), "Search the crate by the house at the northern point of the broken jungle fence in Tai Bwo Wannai."),
 		new CrypticClue("This crate is mine, all mine, even if it is in the middle of the desert.", CRATE_18889, new WorldPoint(3289, 3022, 0), "Center of desert Mining Camp. Search the crates. Requires the metal key from Tourist Trap to enter."),
-		new CrypticClue("Dig where 4 siblings and I all live with our evil overlord.", new WorldPoint(3195, 3357, 0), "Dig in the chicken pen inside the Champion's Guild"),
+		new CrypticClue("Dig where 4 siblings and I all live with our evil overlord.", new WorldPoint(3195, 3357, 0), "Dig in the chicken pen inside the Champions' Guild"),
 		new CrypticClue("In a town where the guards are armed with maces, search the upstairs rooms of the Public House.", "Guard dog", 348, new WorldPoint(2574, 3326, 1), "Search the drawers upstairs in the pub north of Ardougne Castle. Kill a Guard dog at Handelmort Mansion to obtain the key."),
 		new CrypticClue("Four blades I have, yet draw no blood; Still I turn my prey to powder. If you are brave, come search my roof; It is there my blades are louder.", CRATE_12963, new WorldPoint(3166, 3309, 2), "Lumbridge windmill, search the crates on the top floor."),
 		new CrypticClue("Search through some drawers in the upstairs of a house in Rimmington.", DRAWERS_352, new WorldPoint(2970, 3214, 1), "On the first floor of the house north of Hetty the Witch's house in Rimmington."),
@@ -135,7 +134,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 		new CrypticClue("If you look closely enough, it seems that the archers have lost more than their needles.", HAYSTACK, new WorldPoint(2672, 3416, 0), "Search the haystack by the south corner of the Rangers' Guild"),
 		new CrypticClue("Search the crate in the left-hand tower of Lumbridge Castle.", CRATE_357, new WorldPoint(3228, 3212, 1), "Located on the first floor of the southern tower at the Lumbridge Castle entrance."),
 		new CrypticClue("'Small shoe.' Often found with rod on mushroom.", "Gnome trainer", new WorldPoint(2476, 3428, 0), "Talk to any Gnome trainer in the agility area of the Tree Gnome Stronghold."),
-		new CrypticClue("I live in a deserted crack collecting soles.", "Genie", new WorldPoint(3371, 9320, 0), "Enter the crack west of Nardah Rug merchant, and talk to the Genie."),
+		new CrypticClue("I live in a deserted crack collecting soles.", "Genie", new WorldPoint(3371, 9320, 0), "Enter the crack west of Nardah Rug merchant, and talk to the Genie. You'll need a light source and a rope."),
 		new CrypticClue("46 is my number. My body is the colour of burnt orange and crawls among those with eight. Three mouths I have, yet I cannot eat. My blinking blue eye hides my grave.", new WorldPoint(3170, 3885, 0), "Sapphire respawn in the Spider's Nest, lvl 46 Wilderness. Dig under the sapphire spawn."),
 		new CrypticClue("Green is the colour of my death as the winter-guise, I swoop towards the ground.", new WorldPoint(2780, 3783, 0), "Players need to slide down to where Trollweiss grows on Trollweiss Mountain."),
 		new CrypticClue("Talk to a party-goer in Falador.", "Lucy", new WorldPoint(3046, 3382, 0), "Lucy is the bartender on the first floor of the party room."),
@@ -144,7 +143,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 		new CrypticClue("Search the Coffin in Edgeville.", COFFIN, new WorldPoint(3091, 3477, 0), "Search the coffin located by the Wilderness teleport lever."),
 		new CrypticClue("When no weapons are at hand, then is the time to reflect. In Saradomin's name, redemption draws closer...", DRAWERS_350, new WorldPoint(2818, 3351, 0), "On Entrana, search the southern drawer in the house with the cooking range."),
 		new CrypticClue("Search the crates in a house in Yanille that has a piano.", CRATE_357, new WorldPoint(2598, 3105, 0), "The house is located northwest of the bank."),
-		new CrypticClue("Speak to the staff of Sinclair mansion.", "Louisa", new WorldPoint(2736, 3578, 0), "Speak to Louisa, on the ground floor, found at the Sinclair Mansion."),
+		new CrypticClue("Speak to the staff of Sinclair mansion.", "Louisa", new WorldPoint(2736, 3578, 0), "Speak to Louisa, on the ground floor, found at the Sinclair Mansion. Fairy ring CJR"),
 		new CrypticClue("I am a token of the greatest love. I have no beginning or end. My eye is red, I can fit like a glove. Go to the place where it's money they lend, And dig by the gate to be my friend.", new WorldPoint(3191, 9825, 0), "Dig by the gate in the basement of the West Varrock bank."),
 		new CrypticClue("Speak to Kangai Mau.", "Kangai Mau", new WorldPoint(2791, 3183, 0), "Kangai Mau is found in the Shrimp and Parrot in Brimhaven."),
 		new CrypticClue("Speak to Hajedy.", "Hajedy", new WorldPoint(2779, 3211, 0), "Hajedy is found by the cart, located just south of the Brimhaven docks."),
@@ -204,7 +203,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 		new CrypticClue("'A bag belt only?', he asked his balding brothers.", "Abbot Langley", new WorldPoint(3058, 3487, 0), "Talk-to Abbot Langley in Monastery west of Edgeville"),
 		new CrypticClue("Search the drawers upstairs in Falador's shield shop.", DRAWERS, new WorldPoint(2971, 3386, 1), "Cassie's Shield Shop at the northern Falador entrance."),
 		new CrypticClue("Go to this building to be illuminated, and check the drawers while you are there.", "Market Guard", DRAWERS_350 , new WorldPoint(2512, 3641, 1), "Search the drawers in the first floor of the Lighthouse. Kill a Rellekka marketplace guard to obtain the key."),
-		new CrypticClue("Dig near some giant mushrooms behind the Grand Tree.", new WorldPoint(2458, 3504, 0), "Dig near the red mushrooms northwest of the Grand Tree."),
+		new CrypticClue("Dig near some giant mushrooms, behind the Grand Tree.", new WorldPoint(2458, 3504, 0), "Dig near the red mushrooms northwest of the Grand Tree."),
 		new CrypticClue("Pentagrams and demons, burnt bones and remains, I wonder what the blood contains.", new WorldPoint(3297, 3890, 0), "Dig under the blood rune spawn next the the Demonic Ruins."),
 		new CrypticClue("Search the drawers above Varrock's shops.", DRAWERS_7194, new WorldPoint(3206, 3419, 1), "Located upstairs in Thessalia's Fine Clothes shop in Varrock."),
 		new CrypticClue("Search the drawers in one of Gertrude's bedrooms.", DRAWERS_7194, new WorldPoint(3156, 3406, 0), "Kanel's bedroom (southeastern room), outside of west Varrock."),
@@ -258,7 +257,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 		new CrypticClue("Surrounded by white walls and gems.", "Herquin", new WorldPoint(2945, 3335, 0), "Talk to Herquin, the gem store owner in Falador."),
 		new CrypticClue("Monk's residence in the far west. See robe storage device.", DRAWERS_350, new WorldPoint(1742, 3490, 1), "Search the drawers upstairs in the chapel found on the southern coast of Great Kourend's Hosidius House. Directly south of the player-owned house portal."),
 		new CrypticClue("Search the drawers in Catherby's Archery shop.", DRAWERS_350, new WorldPoint(2825, 3442, 0), "Hickton's Archery Emporium in Catherby."),
-		new CrypticClue("The hand ain't listening!", "The Face", new WorldPoint(3019, 3232, 0), "Talk to The Face located by the manhole just north of the Port Sarim fishing shop."),
+		new CrypticClue("The hand ain't listening.", "The Face", new WorldPoint(3019, 3232, 0), "Talk to The Face located by the manhole just north of the Port Sarim fishing shop."),
 		new CrypticClue("Search the chest in the left-hand tower of Camelot Castle.", CLOSED_CHEST_25592, new WorldPoint(2748, 3495, 2), "Located on the second floor of the western tower of Camelot."),
 		new CrypticClue("Kill the spiritual, magic and godly whilst representing their own god", null, "Kill a spiritual mage while wearing a corresponding god item."),
 		new CrypticClue("Anger those who adhere to Saradomin's edicts to prevent travel.", "Monk of Entrana", new WorldPoint(3042, 3236, 0), "Port Sarim Docks, try to charter a ship to Entrana with armour or weapons equipped."),
@@ -274,7 +273,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 		new CrypticClue("Belladonna, my dear. If only I had gloves, then I could hold you at last.", "Tool Leprechaun", new WorldPoint(3088, 3357, 0), "Talk to Tool Leprechaun at Draynor Manor"),
 		new CrypticClue("Impossible to make angry", "Abbot Langley", new WorldPoint(3059, 3486, 0), "Speak to Abbot Langley at the Edgeville Monastery."),
 		new CrypticClue("Search the crates in Horvik's armoury.", CRATE_5106, new WorldPoint(3228, 3433, 0), "Horvik's in Varrock"),
-		new CrypticClue("Ghommal wishes to be impressed by how strong your equipment is.", "Ghommal", new WorldPoint(2878, 3546, 0), "Talk to Ghommal at the Warrior's Guild while wearing sufficiently strong equipment"),
+		new CrypticClue("Ghommal wishes to be impressed by how strong your equipment is.", "Ghommal", new WorldPoint(2878, 3546, 0), "Talk to Ghommal at the Warriors' Guild while wearing sufficiently strong equipment"),
 		new CrypticClue("Shhhh!", "Logosia", new WorldPoint(1633, 3808, 0), "Speak to Logosia in the Arceuus House Library's ground floor."),
 		new CrypticClue("Salty peter.", "Konoo", null, "Talk to Konoo who is digging saltpeter in the Hosidius district in Zeah."),
 		new CrypticClue("Talk to Zeke in Al Kharid.", "Zeke", new WorldPoint(3287, 3190, 0),  "Zeke is the owner of the scimitar shop in Al Kharid."),
@@ -356,7 +355,12 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 
 		if (objectId != -1)
 		{
-			ObjectComposition object = plugin.getClient().getObjectDefinition(getObjectId());
+			ObjectComposition object = plugin.getClient().getObjectDefinition(objectId);
+
+			if (object != null && object.getImpostorIds() != null)
+			{
+				object = object.getImpostor();
+			}
 
 			if (object != null)
 			{
@@ -385,7 +389,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 
 			if (localLocation != null)
 			{
-				OverlayUtil.renderTileOverlay(plugin.getClient(), graphics, localLocation, SPADE_IMAGE, Color.ORANGE);
+				OverlayUtil.renderTileOverlay(plugin.getClient(), graphics, localLocation, plugin.getSpadeImage(), Color.ORANGE);
 			}
 		}
 
@@ -394,7 +398,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 		{
 			for (NPC npc : plugin.getNpcsToMark())
 			{
-				OverlayUtil.renderActorOverlayImage(graphics, npc, CLUE_SCROLL_IMAGE, Color.ORANGE, IMAGE_Z_OFFSET);
+				OverlayUtil.renderActorOverlayImage(graphics, npc, plugin.getClueScrollImage(), Color.ORANGE, IMAGE_Z_OFFSET);
 			}
 		}
 
@@ -410,7 +414,7 @@ public class CrypticClue extends ClueScroll implements TextClueScroll, NpcClueSc
 					OverlayUtil.renderHoverableArea(graphics, gameObject.getClickbox(), mousePosition,
 							CLICKBOX_FILL_COLOR, CLICKBOX_BORDER_COLOR, CLICKBOX_HOVER_BORDER_COLOR);
 
-					OverlayUtil.renderImageLocation(plugin.getClient(), graphics, gameObject.getLocalLocation(), CLUE_SCROLL_IMAGE, IMAGE_Z_OFFSET);
+					OverlayUtil.renderImageLocation(plugin.getClient(), graphics, gameObject.getLocalLocation(), plugin.getClueScrollImage(), IMAGE_Z_OFFSET);
 				}
 			}
 		}

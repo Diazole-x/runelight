@@ -27,11 +27,16 @@ package net.runelite.api;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * An enumeration of integer local variables.
+ */
 @AllArgsConstructor
 @Getter
 public enum VarClientInt
 {
-	TOOLTIP_TIMEOUT(1);
+	TOOLTIP_TIMEOUT(1),
+
+	WORLD_MAP_SEARCH_FOCUSED(190);
 
 	private final int index;
 }
