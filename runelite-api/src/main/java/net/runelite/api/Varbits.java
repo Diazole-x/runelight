@@ -27,6 +27,9 @@ package net.runelite.api;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * An enumeration of local client variables.
+ */
 @AllArgsConstructor
 @Getter
 public enum Varbits
@@ -35,6 +38,16 @@ public enum Varbits
 	 * If chatbox is transparent or not
 	 */
 	TRANSPARENT_CHATBOX(4608),
+
+	/*
+	 * If the player has an active stamina potion effect or not
+	 */
+	RUN_SLOWED_DEPLETION_ACTIVE(25),
+
+	/**
+	 * If scrollbar in resizable mode chat is on the left
+	 */
+	CHAT_SCROLLBAR_ON_LEFT(6374),
 
 	/**
 	 * Runecraft pouches
@@ -199,6 +212,17 @@ public enum Varbits
 	IN_GAME_BA(3923),
 
 	/**
+	 * Blast Furnace Bar Dispenser
+	 *
+	 * These are the expected values:
+	 *	0 = No bars being processed
+	 *	1 = Ores are being processed on the conveyor belt, bar dispenser cannot be checked
+	 *	2 = Bars are cooling down
+	 *	3 = Bars can be collected
+	 */
+	BAR_DISPENSER(936),
+
+	/**
 	 * Motherlode mine sack
 	 */
 	SACK_NUMBER(5558),
@@ -206,6 +230,11 @@ public enum Varbits
 
 	/**
 	 * Experience tracker
+	 *
+	 * EXPERIENCE_TRACKER_POSITION expected values:
+	 *   0 = Right
+	 *   1 = Middle
+	 *   2 = Left
 	 */
 	EXPERIENCE_TRACKER_POSITION(4692),
 	EXPERIENCE_TRACKER_COUNTER(4697),
@@ -222,6 +251,15 @@ public enum Varbits
 	TITHE_FARM_SACK_AMOUNT(4900),
 	TITHE_FARM_SACK_ICON(5370),
 	TITHE_FARM_POINTS(4893),
+	
+	/**
+	 * Blast Mine
+	 */
+	BLAST_MINE_COAL(4924),
+	BLAST_MINE_GOLD(4925),
+	BLAST_MINE_MITHRIL(4926),
+	BLAST_MINE_ADAMANTITE(4921),
+	BLAST_MINE_RUNITE(4922),
 
 	/**
 	 * Raids
@@ -230,6 +268,11 @@ public enum Varbits
 	TOTAL_POINTS(5431),
 	PERSONAL_POINTS(5422),
 	RAID_PARTY_SIZE(5424),
+
+	/**
+	 * Theatre of Blood 1=In Party, 2=Inside/Spectator, 3=Dead Spectating
+	 */
+	THEATRE_OF_BLOOD(6440),
 
 	/**
 	 * Nightmare Zone
@@ -344,10 +387,18 @@ public enum Varbits
 	/**
 	 * The varbit that stores the players {@code AccountType}.
 	 */
-	ACCOUNT_TYPE(1777);
+	ACCOUNT_TYPE(1777),
 
 	/**
-	 * varbit id
+	 * Corp beast damage
+	 */
+	CORP_DAMAGE(999),
+
+	WORLDHOPPER_FAVROITE_1(4597),
+	WORLDHOPPER_FAVROITE_2(4598);
+
+	/**
+	 * The raw varbit ID.
 	 */
 	private final int id;
 }

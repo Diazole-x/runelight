@@ -28,39 +28,56 @@ package net.runelite.client.plugins.fishing;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.primitives.Ints;
 import com.google.inject.Provides;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.InventoryID;
+import net.runelite.api.Item;
+import net.runelite.api.ItemID;
 import net.runelite.api.NPC;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.ConfigChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.queries.NPCQuery;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.xptracker.XpTrackerPlugin;
-import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.QueryRunner;
 
 @PluginDescriptor(
-	name = "Fishing"
+	name = "Fishing",
+	description = "Show fishing stats and mark fishing spots",
+	tags = {"overlay", "skilling"}
 )
 @PluginDependency(XpTrackerPlugin.class)
 @Singleton
+@Slf4j
 public class FishingPlugin extends Plugin
 {
 	private final List<Integer> spotIds = new ArrayList<>();
+
+	@Getter(AccessLevel.PACKAGE)
+	private final FishingSession session = new FishingSession();
+
+	@Getter(AccessLevel.PACKAGE)
+	private Map<Integer, MinnowSpot> minnowSpots = new HashMap<>();
 
 	@Getter(AccessLevel.PACKAGE)
 	private NPC[] fishingSpots;
@@ -70,6 +87,9 @@ public class FishingPlugin extends Plugin
 
 	@Inject
 	private QueryRunner queryRunner;
+
+	@Inject
+	private OverlayManager overlayManager;
 
 	@Inject
 	private FishingConfig config;
@@ -83,8 +103,6 @@ public class FishingPlugin extends Plugin
 	@Inject
 	private FishingSpotMinimapOverlay fishingSpotMinimapOverlay;
 
-	private final FishingSession session = new FishingSession();
-
 	@Provides
 	FishingConfig provideConfig(ConfigManager configManager)
 	{
@@ -94,19 +112,89 @@ public class FishingPlugin extends Plugin
 	@Override
 	protected void startUp() throws Exception
 	{
-		// Initialize overlay config
+		overlayManager.add(overlay);
 		updateConfig();
 	}
 
 	@Override
-	public Collection<Overlay> getOverlays()
+	protected void shutDown() throws Exception
 	{
-		return Arrays.asList(overlay, spotOverlay, fishingSpotMinimapOverlay);
+		overlayManager.remove(overlay);
+		overlayManager.remove(spotOverlay);
+		overlayManager.remove(fishingSpotMinimapOverlay);
+		minnowSpots.clear();
 	}
 
-	public FishingSession getSession()
+	@Subscribe
+	public void onItemContainerChanged(ItemContainerChanged event)
 	{
-		return session;
+		boolean showOverlays = false;
+
+		if (session.getLastFishCaught() != null)
+		{
+			showOverlays = true;
+		}
+		else if (event.getItemContainer() == client.getItemContainer(InventoryID.INVENTORY))
+		{
+			for (Item item : event.getItemContainer().getItems())
+			{
+				if (item == null)
+				{
+					continue;
+				}
+
+				switch (item.getId())
+				{
+					case ItemID.DRAGON_HARPOON:
+					case ItemID.INFERNAL_HARPOON:
+					case ItemID.INFERNAL_HARPOON_UNCHARGED:
+					case ItemID.HARPOON:
+					case ItemID.BARBTAIL_HARPOON:
+					case ItemID.BIG_FISHING_NET:
+					case ItemID.SMALL_FISHING_NET:
+					case ItemID.SMALL_FISHING_NET_6209:
+					case ItemID.FISHING_ROD:
+					case ItemID.FLY_FISHING_ROD:
+					case ItemID.BARBARIAN_ROD:
+					case ItemID.OILY_FISHING_ROD:
+					case ItemID.LOBSTER_POT:
+					case ItemID.KARAMBWAN_VESSEL:
+					case ItemID.KARAMBWAN_VESSEL_3159:
+						showOverlays = true;
+						break;
+				}
+			}
+		}
+		else if (event.getItemContainer() == client.getItemContainer(InventoryID.EQUIPMENT))
+		{
+			for (Item item : event.getItemContainer().getItems())
+			{
+				if (item == null)
+				{
+					continue;
+				}
+
+				switch (item.getId())
+				{
+					case ItemID.DRAGON_HARPOON:
+					case ItemID.INFERNAL_HARPOON:
+					case ItemID.INFERNAL_HARPOON_UNCHARGED:
+						showOverlays = true;
+						break;
+				}
+			}
+		}
+
+		if (showOverlays)
+		{
+			overlayManager.add(spotOverlay);
+			overlayManager.add(fishingSpotMinimapOverlay);
+		}
+		else
+		{
+			overlayManager.remove(spotOverlay);
+			overlayManager.remove(fishingSpotMinimapOverlay);
+		}
 	}
 
 	@Subscribe
@@ -119,7 +207,9 @@ public class FishingPlugin extends Plugin
 
 		if (event.getMessage().contains("You catch a") || event.getMessage().contains("You catch some"))
 		{
-			session.setLastFishCaught();
+			session.setLastFishCaught(Instant.now());
+			overlayManager.add(spotOverlay);
+			overlayManager.add(fishingSpotMinimapOverlay);
 		}
 	}
 
@@ -167,10 +257,18 @@ public class FishingPlugin extends Plugin
 		if (config.showInfernalEel())
 		{
 			spotIds.addAll(Ints.asList(FishingSpot.INFERNAL_EEL.getIds()));
-		}	
+		}
 		if (config.showSacredEel())
 		{
 			spotIds.addAll(Ints.asList(FishingSpot.SACRED_EEL.getIds()));
+		}
+		if (config.showCaveEel())
+		{
+			spotIds.addAll(Ints.asList(FishingSpot.CAVE_EEL.getIds()));
+		}
+		if (config.showSlimyEel())
+		{
+			spotIds.addAll(Ints.asList(FishingSpot.SLIMY_EEL.getIds()));
 		}
 		if (config.showKarambwanji())
 		{
@@ -183,7 +281,7 @@ public class FishingPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void checkSpots(GameTick event)
+	public void onGameTick(GameTick event)
 	{
 		final LocalPoint cameraPoint = new LocalPoint(client.getCameraX(), client.getCameraY());
 
@@ -193,5 +291,43 @@ public class FishingPlugin extends Plugin
 		// -1 to make closer things draw last (on top of farther things)
 		Arrays.sort(spots, Comparator.comparing(npc -> -1 * npc.getLocalLocation().distanceTo(cameraPoint)));
 		fishingSpots = spots;
+
+		// process minnows
+		for (NPC npc : spots)
+		{
+			FishingSpot spot = FishingSpot.getSpot(npc.getId());
+
+			if (spot == null)
+			{
+				continue;
+			}
+
+			if (spot == FishingSpot.MINNOW && config.showMinnowOverlay())
+			{
+				int id = npc.getIndex();
+				MinnowSpot minnowSpot = minnowSpots.get(id);
+				// create the minnow spot if it doesn't already exist
+				if (minnowSpot == null)
+				{
+					minnowSpots.put(id, new MinnowSpot(npc.getWorldLocation(), Instant.now()));
+				}
+				// if moved, reset
+				else if (!minnowSpot.getLoc().equals(npc.getWorldLocation()))
+				{
+					minnowSpots.put(id, new MinnowSpot(npc.getWorldLocation(), Instant.now()));
+				}
+			}
+		}
+	}
+
+	@Subscribe
+	public void onNpcDespawned(NpcDespawned npcDespawned)
+	{
+		NPC npc = npcDespawned.getNpc();
+		MinnowSpot minnowSpot = minnowSpots.remove(npc.getIndex());
+		if (minnowSpot != null)
+		{
+			log.debug("Minnow spot {} despawned", npc);
+		}
 	}
 }

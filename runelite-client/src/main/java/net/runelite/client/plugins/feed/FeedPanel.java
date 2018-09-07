@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2018, Lotto <https://github.com/devLotto>
+ * Copyright (c) 2018, Psikoi <https://github.com/psikoi>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,8 +27,10 @@ package net.runelite.client.plugins.feed;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
@@ -47,8 +50,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
+import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.LinkBrowser;
 import net.runelite.http.api.RuneLiteAPI;
 import net.runelite.http.api.feed.FeedItem;
@@ -63,8 +68,8 @@ import okhttp3.ResponseBody;
 @Slf4j
 class FeedPanel extends PluginPanel
 {
-	private static BufferedImage RUNELITE_ICON;
-	private static BufferedImage OSRS_ICON;
+	private static final ImageIcon RUNELITE_ICON;
+	private static final ImageIcon OSRS_ICON;
 
 	private static final Color TWEET_BACKGROUND = new Color(15, 15, 15);
 	private static final Color OSRS_NEWS_BACKGROUND = new Color(36, 30, 19);
@@ -93,29 +98,8 @@ class FeedPanel extends PluginPanel
 
 	static
 	{
-		try
-		{
-			synchronized (ImageIO.class)
-			{
-				RUNELITE_ICON = ImageIO.read(FeedPanel.class.getResourceAsStream("runelite.png"));
-			}
-		}
-		catch (IOException e)
-		{
-			log.warn("Client icon failed to load", e);
-		}
-
-		try
-		{
-			synchronized (ImageIO.class)
-			{
-				OSRS_ICON = ImageIO.read(FeedPanel.class.getResourceAsStream("osrs.png"));
-			}
-		}
-		catch (IOException e)
-		{
-			log.warn("OSRS icon failed to load", e);
-		}
+		RUNELITE_ICON = new ImageIcon(ImageUtil.getResourceStreamFromClass(FeedPanel.class, "runelite.png"));
+		OSRS_ICON = new ImageIcon(ImageUtil.getResourceStreamFromClass(FeedPanel.class, "osrs.png"));
 	}
 
 	private final FeedConfig config;
@@ -123,8 +107,13 @@ class FeedPanel extends PluginPanel
 
 	FeedPanel(FeedConfig config, Supplier<FeedResult> feedSupplier)
 	{
+		super(true);
 		this.config = config;
 		this.feedSupplier = feedSupplier;
+
+		setBorder(new EmptyBorder(10, 10, 10, 10));
+		setBackground(ColorScheme.DARK_GRAY_COLOR);
+		setLayout(new GridLayout(0, 1, 0, 4));
 	}
 
 	void rebuildFeed()
@@ -207,14 +196,14 @@ class FeedPanel extends PluginPanel
 			case OSRS_NEWS:
 				if (OSRS_ICON != null)
 				{
-					avatar.setIcon(new ImageIcon(OSRS_ICON));
+					avatar.setIcon(OSRS_ICON);
 				}
 				avatarAndRight.setBackground(OSRS_NEWS_BACKGROUND);
 				break;
 			default:
 				if (RUNELITE_ICON != null)
 				{
-					avatar.setIcon(new ImageIcon(RUNELITE_ICON));
+					avatar.setIcon(RUNELITE_ICON);
 				}
 				avatarAndRight.setBackground(BLOG_POST_BACKGROUND);
 				break;
@@ -274,12 +263,14 @@ class FeedPanel extends PluginPanel
 			public void mouseEntered(MouseEvent e)
 			{
 				avatarAndRight.setBackground(hoverColor);
+				avatarAndRight.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e)
 			{
 				avatarAndRight.setBackground(backgroundColor);
+				avatarAndRight.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}
 
 			@Override

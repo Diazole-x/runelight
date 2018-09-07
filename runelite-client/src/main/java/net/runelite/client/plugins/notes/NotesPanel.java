@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2018 Charlie Waters
+ * Copyright (c) 2018, Psikoi <https://github.com/psikoi>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,21 +25,21 @@
  */
 package net.runelite.client.plugins.notes;
 
-import javax.swing.BorderFactory;
-import javax.swing.JTextArea;
-import javax.swing.JLabel;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-
-import lombok.extern.slf4j.Slf4j;
-import net.runelite.client.ui.PluginPanel;
-
 import java.awt.BorderLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import lombok.extern.slf4j.Slf4j;
+import net.runelite.client.ui.ColorScheme;
+import net.runelite.client.ui.PluginPanel;
 
 @Slf4j
-public class NotesPanel extends PluginPanel
+class NotesPanel extends PluginPanel
 {
 	private final JTextArea notesEditor = new JTextArea();
 
@@ -50,13 +51,17 @@ public class NotesPanel extends PluginPanel
 		getParent().add(this, BorderLayout.CENTER);
 
 		setLayout(new BorderLayout());
-		setBorder(BorderFactory.createEmptyBorder(2, 6, 6, 6));
-
-		final JLabel notesHeader = new JLabel("Notes");
-		add(notesHeader, BorderLayout.NORTH);
+		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		setBackground(ColorScheme.DARK_GRAY_COLOR);
 
 		notesEditor.setLineWrap(true);
 		notesEditor.setWrapStyleWord(true);
+
+		JPanel notesContainer = new JPanel();
+		notesContainer.setLayout(new BorderLayout());
+		notesContainer.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+		notesEditor.setOpaque(false);
 
 		// load note text
 		String data = config.notesData();
@@ -90,7 +95,10 @@ public class NotesPanel extends PluginPanel
 				}
 			}
 		});
-		add(notesEditor, BorderLayout.CENTER);
+		notesContainer.add(notesEditor, BorderLayout.CENTER);
+		notesContainer.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+		add(notesContainer, BorderLayout.CENTER);
 	}
 
 	void setNotes(String data)

@@ -25,10 +25,10 @@
 package net.runelite.client.util;
 
 import java.awt.AWTException;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.SystemTray;
@@ -58,7 +58,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
 import javax.swing.plaf.FontUIResource;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.NavigationButton;
+import net.runelite.client.ui.components.CustomScrollBarUI;
 import org.pushingpixels.substance.internal.SubstanceSynapse;
 import org.pushingpixels.substance.internal.utils.SubstanceCoreUtilities;
 
@@ -77,7 +79,19 @@ public class SwingUtil
 		// Force heavy-weight popups/tooltips.
 		// Prevents them from being obscured by the game applet.
 		ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
+		ToolTipManager.sharedInstance().setInitialDelay(300);
 		JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+
+		UIManager.put("Button.foreground", Color.WHITE);
+		UIManager.put("MenuItem.foreground", Color.WHITE);
+		UIManager.put("Panel.background", ColorScheme.DARK_GRAY_COLOR);
+		UIManager.put("ScrollBarUI", CustomScrollBarUI.class.getName());
+		UIManager.put("TextField.selectionBackground", ColorScheme.BRAND_ORANGE_TRANSPARENT);
+		UIManager.put("TextField.selectionForeground", Color.WHITE);
+		UIManager.put("FormattedTextField.selectionBackground", ColorScheme.BRAND_ORANGE_TRANSPARENT);
+		UIManager.put("FormattedTextField.selectionForeground", Color.WHITE);
+		UIManager.put("TextArea.selectionBackground", ColorScheme.BRAND_ORANGE_TRANSPARENT);
+		UIManager.put("TextArea.selectionForeground", Color.WHITE);
 
 		// Do not render shadows under popups/tooltips.
 		// Fixes black boxes under popups that are above the game applet.
@@ -210,7 +224,7 @@ public class SwingUtil
 						result = JOptionPane.showConfirmDialog(
 							frame,
 							"Are you sure you want to exit?", "Exit",
-							JOptionPane .OK_CANCEL_OPTION,
+							JOptionPane.OK_CANCEL_OPTION,
 							JOptionPane.QUESTION_MESSAGE);
 					}
 				}
@@ -228,17 +242,6 @@ public class SwingUtil
 		});
 	}
 
-	private static BufferedImage resizeImage(BufferedImage image, int newWidth, int newHeight)
-	{
-		final Image tmp = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-		final BufferedImage dimg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-
-		final Graphics2D g2d = dimg.createGraphics();
-		g2d.drawImage(tmp, 0, 0, null);
-		g2d.dispose();
-		return dimg;
-	}
-
 	/**
 	 * Create swing button from navigation button.
 	 *
@@ -254,11 +257,11 @@ public class SwingUtil
 	{
 
 		final BufferedImage scaledImage = iconSize > 0
-			? resizeImage(navigationButton.getIcon(), iconSize, iconSize)
+			? ImageUtil.resizeImage(navigationButton.getIcon(), iconSize, iconSize)
 			: navigationButton.getIcon();
 
 		final JButton button = new JButton();
-		button.setName(navigationButton.getName());
+		button.setMaximumSize(new Dimension(30, 30));
 		button.setToolTipText(navigationButton.getTooltip());
 		button.setIcon(new ImageIcon(scaledImage));
 		button.putClientProperty(SubstanceSynapse.FLAT_LOOK, Boolean.TRUE);
